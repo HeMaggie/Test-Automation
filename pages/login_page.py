@@ -4,9 +4,14 @@ from .base_page import BasePage
 import time
 
 class LoginPage(BasePage):
-	LOGIN_BTN = (By.ID,'seatlogin')
+	#For table page - login btn
+	TABLE_LOGIN_BTN = (By.ID,'seatlogin')
+
+	#for cart page - login btn
+	CART_LOGIN_BTN = (By.ID,"login")
 	PASSWORD_INPUT = (By.ID,"loginp")
 	LOGIN_SUBMIT = (By.ID,"loginSubmit")
+
 
 	def __init__(self, driver):
 		super().__init__(driver)
@@ -16,11 +21,14 @@ class LoginPage(BasePage):
 	def open(self,url):
 		super().open(url)
 	
-	def login(self,password):
+	def login(self, password, page="table"):
 		self.driver.delete_all_cookies()
 
 		#find login button
-		self.find_element(*self.LOGIN_BTN).click()
+		if page == "table":
+			self.find_element(*self.TABLE_LOGIN_BTN).click()
+		else:
+			self.find_element(*self.CART_LOGIN_BTN).click()
 
 		#enter password
 		pwd_input = self.find_element(*self.PASSWORD_INPUT)
@@ -30,7 +38,7 @@ class LoginPage(BasePage):
 		self.find_element(*self.LOGIN_SUBMIT).click()
 		time.sleep(0.5)
 
-		self.login_button_text = self.find_element(*self.LOGIN_BTN).text
+		self.login_button_text = self.find_element(*self.TABLE_LOGIN_BTN).text
 
 		#check if log in succeeds
 		time.sleep(0.5)
@@ -38,7 +46,7 @@ class LoginPage(BasePage):
 			self.set_login_status(True)
 		else:
 			self.set_login_status(False)
-		print(f"Login Status: {self.login_status}")
+		#print(f"Login Status: {self.login_status}")
 
 		return self.login_button_text
 

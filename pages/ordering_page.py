@@ -81,6 +81,8 @@ class OrderingPage(BasePage):
 		for i in range(0,len(itemsub)):
 			itemsub[i].click()
 			break  #Just need to click one for now
+
+		#what if the modifier groups are set on each subitem????
 		
 
 		

@@ -32,11 +32,14 @@ class DineinPage(BasePage):
 	def select_guest(self, num):
 		GUEST_SELECTOR = f'.guests[data-v="{num}"]' 
 		GUEST_NUM = (By.CSS_SELECTOR, GUEST_SELECTOR)
+
 		#wait until clickable
 		element = WebDriverWait(self.driver, 10).until(
 			EC.presence_of_element_located(GUEST_NUM)
 		)
-		self.find_element(*GUEST_NUM).click()
+		guest = self.find_element(*GUEST_NUM)
+		self.driver.execute_script("arguments[0].click();", guest)
+		#self.find_element(*GUEST_NUM).click()
 
 	def table_status(self):
 		return None

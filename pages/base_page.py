@@ -11,9 +11,9 @@ class BasePage():
 	def find_elements(self, *locator):
 		return self.driver.find_elements(*locator)
 	
-	def send_key_slowly(self, element, password):
-		for p in password:
-			element.send_keys(p)
+	def send_key_slowly(self, element, text):
+		for t in text:
+			element.send_keys(t)
 			time.sleep(0.1)
 
 	def is_valid_format(self,s):

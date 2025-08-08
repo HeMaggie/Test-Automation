@@ -59,14 +59,17 @@ class CartPage(BasePage):
 		return total
 		
 	def add_tip(self, tip_type, tip_amount):
+		if tip_amount == 0: 
+			return
+
 		TIP_ID = (By.CSS_SELECTOR, "#rightstrip #tip")
 		tip_btn = self.find_element(*TIP_ID)
 		tip_btn.click()
 
 		#1. preset $tip (tip_type = 'd')
-		if tip_type == 'abs':
+		if tip_type == '$':
 			tip_amount = '-' + str(tip_amount)
-			print(tip_amount)
+			#print(tip_amount)
 			TIP_DOLLAR = (By.CSS_SELECTOR, f'#vipCoupon .discount[data-value="{tip_amount}"]')
 			tip_dollar_btn = self.find_element(*TIP_DOLLAR)
 			self.driver.execute_script("arguments[0].click()",tip_dollar_btn)
@@ -84,19 +87,21 @@ class CartPage(BasePage):
 		self.driver.execute_script("arguments[0].click()",submit_btn)'''
 
 		#=============to be deleted============
-		time.sleep(2)
+		#time.sleep(2)
 
 		#return??
 
-	def add_discount(self, disc_type, disc_amount):
+	def add_discount(self, disc_type, disc_amount): #(abs, 5) or (pct, 5)
+		if disc_amount == 0: 
+			return
 		DISCOUNT_ID = (By.CSS_SELECTOR, "#rightw #bts #stbl #discount")
 		discount_btn = self.find_element(*DISCOUNT_ID)
 		discount_btn.click()
 
 		#1. preset $disc (tip_type = 'd')
-		if disc_type == 'abs':
+		if disc_type == '$':
 			disc_amount = '-' + str(disc_amount)
-			print(disc_amount)
+			#print(disc_amount)
 			DISC_DOLLAR = (By.CSS_SELECTOR, f'#vipCoupon .discount[data-value="{disc_amount}"]')
 			disc_dollar_btn = self.find_element(*DISC_DOLLAR)
 			self.driver.execute_script("arguments[0].click()",disc_dollar_btn)
@@ -114,7 +119,7 @@ class CartPage(BasePage):
 		self.driver.execute_script("arguments[0].click()",submit_btn)'''
 
 		#=============to be deleted============
-		time.sleep(2)
+		#time.sleep(2)
 
 
 	def remove_tax(self):
