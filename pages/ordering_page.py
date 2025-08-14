@@ -14,13 +14,18 @@ class OrderingPage(BasePage):
 		#menu_name:00Regular, category_id:1, item_id:551
 		#select menu
 		self.menu_helper(menu_name)
+		time.sleep(0.5)
 
 		#select category
 		self.category_helper(category_id)
+		time.sleep(0.5)
 
-		#select item
+		#select item with wait
 		ITEM_ID = (By.CSS_SELECTOR, f'.item[iid="{item_id}"]')
-		item = self.find_element(*ITEM_ID)
+		item = self.wait_for_element_clickable(ITEM_ID, timeout=10)
+		if not item:
+			# Fallback to regular find
+			item = self.find_element(*ITEM_ID)
 
 		return item
 
@@ -45,7 +50,15 @@ class OrderingPage(BasePage):
 		return None
 
 	def enter_order(self):
-		self.find_element(By.ID, "enter").click()
+		enter_btn = self.wait_for_element_clickable((By.ID, "enter"), timeout=10)
+		if enter_btn:
+			self.driver.execute_script("arguments[0].scrollIntoView(true);", enter_btn)
+			time.sleep(0.5)
+			self.driver.execute_script("arguments[0].click();", enter_btn)
+		else:
+			# Fallback
+			enter_btn = self.find_element(By.ID, "enter")
+			self.driver.execute_script("arguments[0].click();", enter_btn)
 
 	def menu_helper(self, menu_name):
 		MENU_NAME = (By.CSS_SELECTOR, f'.pmenu[data-umenu="{menu_name}"]')
@@ -55,8 +68,15 @@ class OrderingPage(BasePage):
 
 	def category_helper(self,category_id):
 		CATEGOTY_ID = (By.CSS_SELECTOR, f'.cat[cid="{category_id}"]')
-		self.find_element(*CATEGOTY_ID).click()
-		#Error Handler??
+		category_element = self.wait_for_element_clickable(CATEGOTY_ID, timeout=10)
+		if category_element:
+			self.driver.execute_script("arguments[0].scrollIntoView(true);", category_element)
+			time.sleep(0.5)
+			self.driver.execute_script("arguments[0].click();", category_element)
+		else:
+			# Fallback
+			category_element = self.find_element(*CATEGOTY_ID)
+			self.driver.execute_script("arguments[0].click();", category_element)
 
 	def modifier_helper(self,coption):
 		coptions = coption.strip('-').split('-')

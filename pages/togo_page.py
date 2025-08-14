@@ -27,28 +27,38 @@ class TogoPage(BasePage):
 		if not self.is_customer_page():
 			self.open_customer_page()
 
-		#phone field
+		#phone field with wait for interactable element
 		PHONE_ID = (By.ID, "pickphone")
-		phone_field = self.find_element(*PHONE_ID)
-		if not phone_field.get_attribute("value"):
-			self.send_key_slowly(phone_field, phone)
+		phone_field = self.wait_for_element_visible(PHONE_ID, timeout=10)
+		if phone_field and not phone_field.get_attribute("value"):
+			# Ensure element is clickable before interacting
+			phone_field = self.wait_for_element_clickable(PHONE_ID, timeout=5)
+			if phone_field:
+				phone_field.clear()  # Clear any existing value
+				self.send_key_slowly(phone_field, phone)
 
-		#name field
+		#name field with wait
 		NAME_ID = (By.ID, "pickname")
-		name_field = self.find_element(*NAME_ID)
+		name_field = self.wait_for_element_clickable(NAME_ID, timeout=5)
 		#if auto filled, then do nothing, else enter a name
-		if not name_field.get_attribute("value"):
+		if name_field and not name_field.get_attribute("value"):
+			name_field.clear()
 			self.send_key_slowly(name_field, name)
 
-		#address field
+		#address field (optional - may not exist on all pages)
 		ADDRESS_ID = (By.ID, "addr1")
-		address_field = self.find_element(*ADDRESS_ID)
+		address_field = self.wait_for_element(ADDRESS_ID, timeout=3)
+		# Address field is optional, so we don't fail if it's not found
 
-		#submit or cancel
+		#submit or cancel with wait
 		SUBMIT_ID = (By.ID, "picksubmit")
-		submit_btn = self.find_element(*SUBMIT_ID)
-
-		submit_btn.click()
+		submit_btn = self.wait_for_element_clickable(SUBMIT_ID, timeout=10)
+		if submit_btn:
+			self.driver.execute_script("arguments[0].click();", submit_btn)
+		else:
+			# Fallback to regular click
+			submit_btn = self.find_element(*SUBMIT_ID)
+			self.driver.execute_script("arguments[0].click();", submit_btn)
 
 
 

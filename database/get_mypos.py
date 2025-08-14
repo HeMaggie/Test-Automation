@@ -1,4 +1,4 @@
-from database.db_connection import DatabaseConnection
+from database.db_connection_win_version import DatabaseConnection
 from config import Config
 
 class GetMypos(DatabaseConnection):

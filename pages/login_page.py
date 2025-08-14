@@ -28,7 +28,11 @@ class LoginPage(BasePage):
 		if page == "table":
 			self.find_element(*self.TABLE_LOGIN_BTN).click()
 		else:
-			self.find_element(*self.CART_LOGIN_BTN).click()
+			# Handle cart login button that might be intercepted
+			cart_login_btn = self.find_element(*self.CART_LOGIN_BTN)
+			self.driver.execute_script("arguments[0].scrollIntoView(true);", cart_login_btn)
+			time.sleep(0.5)
+			self.driver.execute_script("arguments[0].click();", cart_login_btn)
 
 		#enter password
 		pwd_input = self.find_element(*self.PASSWORD_INPUT)

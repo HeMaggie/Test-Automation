@@ -6,9 +6,9 @@ from pages.cart_page import CartPage
 from database.get_mypos import GetMypos
 from config import Config
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def login_togo(browser, login_page):
-    username = login_page.login(Config.TEST_USERS['kwickpos']['username'], "cart")
+    username = login_page.login(Config.TEST_USERS['kwickpos']['password'], "cart")
     if username != "Login":
         login_page.set_login_status(True)
     else:
@@ -51,7 +51,9 @@ def test_togo_order_flow(browser, togo_setup):
     
     # Verify order was created in database
     time.sleep(1)
-    db = GetMypos()
-    last_order = db.get_myorder("order by order_id desc limit 1")
+    db = GetMypos(Config.SERVER_IP)
+    orders = db.get_myorder("order by order_id desc limit 1")
+    assert orders is not None and len(orders) > 0, "Order not found in database"
+    last_order = orders[0] if orders else None
     assert last_order is not None, "Order not found in database"
     assert float(last_order['food']) > 0, "Order total is 0"
