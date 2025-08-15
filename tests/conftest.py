@@ -1,4 +1,5 @@
 import pytest
+from itertools import product
 from utils.browser_manager import BrowserManager
 from pages.login_page import LoginPage
 from pages.dinein_page import DineinPage
@@ -29,20 +30,18 @@ def login_page(browser):
 	login_page = LoginPage(browser)
 	login_page.open(Config.SERVER_URL)
 	yield login_page
-	# Minimal cleanup - just ensure we're logged out
+	# Minimal cleanup - clear cookies and navigate to home
 	try:
-		# Try to click logout if available
-		browser.get(Config.SERVER_URL + "/logout")
-	except:
-		# If logout fails, just navigate to home
+		browser.delete_all_cookies()
 		browser.get(Config.SERVER_URL)
+	except:
+		pass  # Ignore cleanup errors
 
 #Update setting in database before each full test process
+# Add new settings to the keys list and they'll automatically get all combinations
 @pytest.fixture(scope="function", params=[
-    {"store_tip": 0, "tipbefored": 0},
-    {"store_tip": 0, "tipbefored": 1},
-    {"store_tip": 1, "tipbefored": 0},
-    {"store_tip": 1, "tipbefored": 1}
+    dict(zip(["store_tip", "tipbefored", "support.taxb4discountnew"], values))
+    for values in product([0, 1], repeat=3)
 ])
 
 def setup_settings(browser, request):

@@ -97,8 +97,8 @@ TIP_P = DISC_P = 10
 menu_arr =  {
 				"00Regular":
 				{
-					"1": [("7",10)]
-					#"1": [("7",10),("22",10),("49",13),("50",13)],
+					#"1": [("7",10)]
+					"1": [("7",10),("22",10),("49",13),("50",13)],
 					#"2": [("51",10),("52",10),("53",13),("54",13)],
 					#"3": [("55",10),("56",10),("57",13),("58",13)],
 					#"4": [("59",10),("60",10),("61",13),("62",13)]
@@ -164,7 +164,7 @@ def test_item_to_cart(browser, serverip, setup_settings, ordering, menu,category
 		else:
 			tip_val = (subtotal_val + disc_val) * tip_rate / 100
 
-	elif tip_type == '%': #tip_after_tax = 1, total
+	elif tip_type == '%': #tip_after_tax == 1, total
 		if tip_b4_disc == 0:
 			tip_val = (subtotal_val + tax_val) * tip_rate / 100  
 		else:
